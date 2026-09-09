@@ -10,7 +10,7 @@
 :root {
     /* 🔥 문구 전체 시작점 (이게 기준점) */
     --message-left: 860px;  /* → 오른쪽 / ← 왼쪽 */
-    --message-top: 830px;   /* BANADA가 추가되어 위로 살짝(830px) 올림 */
+    --message-top: 760px;   /* ★ 830 → 760px로 위로 올림 (아래 잘림 방지) */
 
     /* 시 · 군 · 구 미세 높이 조절 */
     --region-offset-y: 6px; /* ↑ ↓ */
@@ -26,7 +26,7 @@ body {
     height: 100vh;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     position: relative; 
-    overflow: hidden; /* 버튼이 화면 밖으로 나가도 스크롤 안 생기게 방지 */
+    overflow: hidden;
 }
 
 #content {
@@ -34,8 +34,8 @@ body {
     height: 1024px;
     background: url('bok.png') center/cover no-repeat;
     position: relative;
-    color: #FFFFFF; /* 🔥 기존 노란색(#FFD700)에서 깔끔하고 선명한 화이트로 변경 */
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8); /* 그림자를 조금 더 진하게 주어 가독성 강화 */
+    color: #FFFFFF;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
     flex-shrink: 0;
 }
@@ -49,7 +49,7 @@ body {
     font-weight: bold;
     color: #ffffff;
     letter-spacing: 2px;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9); /* 배경이 밝아도 잘 보이게 강한 섀도우 */
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
 }
 
 /* ================= 문구 블록 ================= */
@@ -69,11 +69,10 @@ body {
     font-size: 52px;
     font-weight: 900;
     font-family: 'Arial Black', sans-serif;
-    color: #ff69b4; /* 핫핑크 포인트 */
+    color: #ff69b4;
     letter-spacing: 4px;
     line-height: 1;
     margin-bottom: 8px;
-    /* 네온사인 느낌의 빛나는 그림자 효과 */
     text-shadow: 0 0 10px rgba(255, 105, 180, 0.6), 0 0 20px rgba(255, 105, 180, 0.4), 0 2px 4px #000;
 }
 
@@ -82,14 +81,14 @@ body {
     font-weight: 600;
     line-height: 1.1;
     white-space: nowrap;
-    color: #F0F0F0; /* 아주 부드러운 화이트 톤 */
+    color: #F0F0F0;
 }
     
 /* 시 · 군 · 구 */
 #region {
     font-size: 38px;
     font-weight: 900;
-    color: #FFB6C1; /* 🔥 로즈골드빛이 감도는 화사한 핑크 톤으로 변경하여 시선 집중! */
+    color: #FFB6C1;
     line-height: 1.1;
     position: relative;
     top: var(--region-offset-y);
@@ -99,7 +98,7 @@ body {
     
 /* ============================================ */
 
-/* 선택 UI (세련된 반투명 블러 효과 및 디자인 개선) */
+/* 선택 UI */
 #selector {
     position: absolute;
     top: 50%;
@@ -133,10 +132,9 @@ select:focus {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
-/* 캡처 버튼 (우측 바깥에 안정적으로 고정) */
+/* 캡처 버튼 */
 #capture-btn {
     position: absolute; 
-    /* 화면 중앙 + 컨텐츠 절반 크기 + 40px 여백 */
     left: calc(50% + 768px + 40px);
     top: calc(50% - 1024px / 2 + 40px); 
     
@@ -183,10 +181,9 @@ select:focus {
     </div>
 </div>
 
-<button id="capture-btn">📸 화면 캡처</button>
+<button id="capture-btn">📸 화면 캡처 (다운로드)</button>
 
 <script>
-// ========================= 전국 17개 광역자치단체 및 기초자치단체 데이터 =========================
 const regions = {
     "서울특별시": ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
     "부산광역시": ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "영도구", "중구", "해운대구"],
@@ -211,13 +208,11 @@ const sido = document.getElementById('sido');
 const sigungu = document.getElementById('sigungu');
 const regionDisplay = document.getElementById('region');
 
-// 초기값 설정
 sido.innerHTML = `<option value="">광역자치단체 선택</option>`;
 Object.keys(regions).forEach(r => sido.innerHTML += `<option value="${r}">${r}</option>`);
 sigungu.innerHTML = `<option value="">시 / 군 / 구 선택</option>`;
 regionDisplay.textContent = "지역을 선택해 주세요"; 
 
-// 최신 이벤트 리스너 방식 적용
 sido.addEventListener('change', () => {
     sigungu.innerHTML = `<option value="">시 / 군 / 구 선택</option>`;
     const selectedList = regions[sido.value];
@@ -243,17 +238,15 @@ sigungu.addEventListener('change', () => {
     }
 });
 
-/* 🔥 핵심 수정: 페이지 열자마자 즉시 시간 찍히게 설정 (캡처 버그 해결) 🔥 */
 function updateTime() {
     const d = new Date();
     document.getElementById('time').textContent =
         `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
 }
-// setInterval이 1초 기다리는 동안 빈칸 방지를 위해 즉시 1회 실행!
 updateTime(); 
 setInterval(updateTime, 1000);
 
-/* 캡처 기능 */
+/* ★★★ 캡처 기능 - 자동 다운로드 방식 (새 창 안 열림!) */
 document.getElementById('capture-btn').addEventListener('click', () => {
     const content = document.getElementById('content');
     const selector = document.getElementById('selector');
@@ -261,7 +254,6 @@ document.getElementById('capture-btn').addEventListener('click', () => {
     // 캡처 전에 셀렉트박스 UI 숨김
     selector.classList.add('hide');
 
-    // #content 영역만 캡처 
     html2canvas(content, {
         scale: 2, 
         useCORS: true,
@@ -270,27 +262,30 @@ document.getElementById('capture-btn').addEventListener('click', () => {
         // 캡처 후 UI 다시 표시
         selector.classList.remove('hide');
         
+        // ★ [수정] 새 창 열지 않고 자동 다운로드!
+        //   - 파일명: BANADA_지역_시간.png
         const dataURL = canvas.toDataURL('image/png');
-        const newWindow = window.open();
         
-        // 새 창 처리 안정성 강화
-        if (newWindow) {
-            newWindow.document.write(`
-                <html>
-                <head><title>BANADA - 지역화면 캡처</title></head>
-                <body style="margin:0; background:#222; display:flex; justify-content:center; align-items:center; height:100vh;">
-                    <img src="${dataURL}" alt="캡처된 이미지" style="max-width: 100%; height: auto; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
-                </body>
-                </html>
-            `);
-            newWindow.document.close();
-            alert(`✅ 캡처가 완료되었습니다! 새 탭에서 확인하세요.`);
-        } else {
-            alert(`❌ 브라우저의 '팝업 차단'을 해제해야 캡처된 이미지를 볼 수 있습니다.`);
-        }
+        // 지역명으로 파일명 생성
+        const regionName = regionDisplay.textContent.replace(/\s/g, '_').replace(/[^\w가-힣]/g, '');
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+        const fileName = `BANADA_${regionName || 'screen'}_${timeStr}.png`;
+        
+        // 자동 다운로드 트리거
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // 살짝 알림 (원치 않으면 이 라인 지우기)
+        // alert(`✅ ${fileName} 다운로드 완료!`);
     }).catch(err => {
         selector.classList.remove('hide');
         alert("❌ 화면 캡처에 실패했습니다.");
+        console.error(err);
     });
 });
 </script>
