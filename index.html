@@ -181,7 +181,7 @@ select:focus {
     </div>
 </div>
 
-<button id="capture-btn">📸 화면 캡처 (다운로드)</button>
+<button id="capture-btn">📸 클립보드에 복사</button>
 
 <script>
 const regions = {
@@ -246,10 +246,11 @@ function updateTime() {
 updateTime(); 
 setInterval(updateTime, 1000);
 
-/* ★★★ 캡처 기능 - 자동 다운로드 방식 (새 창 안 열림!) */
+/* ★★★ 캡처 기능 - 클립보드에 바로 복사! (Ctrl+V로 붙여넣기 가능) */
 document.getElementById('capture-btn').addEventListener('click', () => {
     const content = document.getElementById('content');
     const selector = document.getElementById('selector');
+    const captureBtn = document.getElementById('capture-btn');
     
     // 캡처 전에 셀렉트박스 UI 숨김
     selector.classList.add('hide');
@@ -262,26 +263,26 @@ document.getElementById('capture-btn').addEventListener('click', () => {
         // 캡처 후 UI 다시 표시
         selector.classList.remove('hide');
         
-        // ★ [수정] 새 창 열지 않고 자동 다운로드!
-        //   - 파일명: BANADA_지역_시간.png
-        const dataURL = canvas.toDataURL('image/png');
-        
-        // 지역명으로 파일명 생성
-        const regionName = regionDisplay.textContent.replace(/\s/g, '_').replace(/[^\w가-힣]/g, '');
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-        const fileName = `BANADA_${regionName || 'screen'}_${timeStr}.png`;
-        
-        // 자동 다운로드 트리거
-        const link = document.createElement('a');
-        link.download = fileName;
-        link.href = dataURL;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // 살짝 알림 (원치 않으면 이 라인 지우기)
-        // alert(`✅ ${fileName} 다운로드 완료!`);
+        // ★ 캔버스를 Blob으로 변환 후 클립보드에 복사
+        canvas.toBlob(async (blob) => {
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                
+                // 성공 시 버튼 텍스트 살짝 바꿔서 피드백
+                const originalText = captureBtn.textContent;
+                captureBtn.textContent = '✅ 복사 완료!';
+                captureBtn.style.background = '#00cc6a';
+                setTimeout(() => {
+                    captureBtn.textContent = originalText;
+                    captureBtn.style.background = '';
+                }, 1500);
+            } catch (err) {
+                console.error('클립보드 복사 실패:', err);
+                alert('❌ 클립보드 복사 실패!\n브라우저 권한을 확인해주세요.\n(HTTPS 또는 localhost에서만 작동)');
+            }
+        }, 'image/png');
     }).catch(err => {
         selector.classList.remove('hide');
         alert("❌ 화면 캡처에 실패했습니다.");
